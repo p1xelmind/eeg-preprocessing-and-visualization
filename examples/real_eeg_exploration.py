@@ -5,6 +5,7 @@ from signal_cleaning.normalization import apply_average_reference
 from signal_cleaning.filters import filter_mne
 from signal_cleaning.artifacts import fit_ica, apply_ica
 from signal_cleaning.segmentation import segment_fixed_length
+from signal_cleaning.visualization import plot_epochs_overview, plot_average_epoch, plot_psd_epochs, plot_topomap
 
 data_path = Path(__file__).parent.parent / "data" / "raw" / "S001R01.edf"
 raw = mne.io.read_raw_edf(data_path, preload=True)
@@ -64,9 +65,13 @@ raw_copy = apply_ica(raw_copy, ica, ica.exclude)
 #raw_copy.plot(picks=['Fp1', 'Fp2', 'O1', 'O2'], duration=10, scalings=dict(eeg=100e-6), block=True, title='Cleaned EEG')
 
 epochs = segment_fixed_length(raw_copy, window_length=2.0)
-print(epochs)
-
-epochs.plot(n_epochs=5, n_channels=10, scalings="auto", block=True)
 
 data = epochs.get_data()
 print(data.shape)
+
+#plot_epochs_overview(epochs, 5, 10)
+#plot_average_epoch(epochs)
+#plot_psd_epochs(epochs)
+
+evoked = epochs.average()
+plot_topomap(evoked)
