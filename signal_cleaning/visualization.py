@@ -53,3 +53,34 @@ def plot_topomap(evoked, times=None):
         colorbar=True
     )
     plt.show(block=True)
+
+
+def psd_before_after(
+        raw: mne.io.BaseRaw,
+        clean_raw: mne.io.BaseRaw,
+        fmax: float = 40.0
+) -> None:
+    fig, ax = plt.subplots(figsize=(8, 4))
+
+    raw.plot_psd(
+        fmax=fmax,
+        average=True,
+        axes=ax,
+        color="red",
+        show=False    
+    )
+    
+    clean_raw.plot_psd(
+        fmax=fmax,
+        average=True,
+        axes=ax,
+        color="blue",
+        show=False
+    )
+
+    ax.lines[0].set_color("red")
+    ax.lines[1].set_color("blue")
+    ax.legend(["Raw EEG", "Cleaned EEG"])
+    ax.set_title("PSD before and after ICA")
+
+    plt.show(block=True)
